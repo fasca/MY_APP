@@ -1,101 +1,118 @@
 # Apprendre Ruby on Rails pas à pas
 
-Ce document accompagne un débutant total pour comprendre **pourquoi** et **comment** créer une application Ruby on Rails. Chaque étape est expliquée en détail afin d'offrir le contexte et la logique derrière chaque commande.
+Ce guide est destiné aux grands débutants. Nous allons voir **pourquoi** et **comment** chaque étape fonctionne, afin que vous puissiez suivre sans connaissances préalables.
 
 ## 1. Qu'est‑ce que Ruby on Rails ?
 
-Ruby on Rails (souvent appelé *Rails*) est un framework web écrit en Ruby. Il propose une structure qui simplifie la création d'applications en suivant le modèle **MVC** (Modèle–Vue–Contrôleur). Rails s'occupe de nombreuses tâches répétitives afin que vous puissiez vous concentrer sur la logique de votre application.
+Ruby on Rails (ou simplement *Rails*) est un framework pour construire des sites web en Ruby. Pensez-y comme à un kit de construction : il fournit une structure et des outils pour aller plus vite. Rails s'appuie sur le modèle **MVC** (Modèle–Vue–Contrôleur) pour organiser le code.
 
 ## 2. Préparer son environnement
 
-1. Installez **Ruby** (version 2.7 ou plus) à l'aide de `rbenv` ou `rvm`. Ruby est le langage dans lequel Rails est écrit.
-2. Mettez à jour l'outil `gem` :
+1. **Installer Ruby**
+   - Sur macOS ou Linux : installez `rbenv` ou `rvm`, puis choisissez une version récente, par exemple :
+     ```bash
+     rbenv install 3.1.2
+     rbenv global 3.1.2
+     ```
+   - Sur Windows : utilisez [RubyInstaller](https://rubyinstaller.org/).
+2. **Mettre à jour `gem`** (le gestionnaire de bibliothèques Ruby) :
    ```bash
    gem update --system
    ```
-3. Installez **Rails** :
+3. **Installer Rails** :
    ```bash
    gem install rails
    ```
-4. Vérifiez que tout fonctionne :
+4. **Vérifier vos versions** :
    ```bash
+   ruby --version
    rails --version
+   ```
+5. **Base de données** : SQLite est fourni par défaut, mais vous pouvez installer PostgreSQL ou MySQL si vous préférez.
+6. **Node.js et Yarn** pour le JavaScript moderne :
+   ```bash
+   # Exemple sous Ubuntu
+   sudo apt-get install nodejs yarn
    ```
 
 ## 3. Créer un nouveau projet
 
-Dans un dossier de travail, lancez :
+Dans votre terminal, placez-vous dans le dossier souhaité et lancez :
 
 ```bash
-rails new blog
-cd blog
+rails new mon_blog
+cd mon_blog
 ```
 
-L'option `-d postgresql` permet d'utiliser PostgreSQL comme base de données (par défaut, c'est SQLite). Choisissez celle qui vous convient le mieux.
+Cette commande génère toute l'ossature de l'application. C'est comme déballer un kit prêt à l'emploi.
+
+> Astuce : ajoutez `-d postgresql` pour utiliser PostgreSQL plutôt que SQLite.
 
 ## 4. Explorer la structure du projet
 
-Quelques dossiers importants :
+Les dossiers clés créés sont :
 
-- `app/` : contient les **modèles**, **vues** et **contrôleurs**. C'est le cœur de l'application.
-- `config/` : paramètres et fichier `routes.rb` pour définir l'URL de chaque page.
-- `db/` : migrations et schéma de la base de données.
-- `Gemfile` : liste des bibliothèques Ruby utilisées par le projet.
+- **`app/`** : tout votre code (modèles, vues, contrôleurs).
+- **`config/`** : réglages de l'application et fichier `routes.rb`.
+- **`db/`** : migrations et schéma de la base de données.
+- **`Gemfile`** : liste des bibliothèques utilisées.
 
-Prenez le temps de parcourir ces dossiers. Comprendre leur rôle facilite la suite.
+Prenez le temps de parcourir ces dossiers pour vous familiariser avec leur rôle.
 
 ## 5. Comprendre le modèle MVC
 
-Rails suit l'architecture **Modèle–Vue–Contrôleur** :
+Rails sépare votre application en trois parties :
 
-- **Modèle** : représente les données (ex. un article). Il correspond à une table dans la base. Le modèle contient aussi la logique pour valider et manipuler ces données.
-- **Vue** : gère l'affichage (HTML, CSS) que voit l'utilisateur.
-- **Contrôleur** : reçoit les requêtes web, demande au modèle les informations nécessaires, puis choisit la vue à afficher.
+- **Modèle (Model)** : représente les données et gère la logique d'accès à la base.
+- **Vue (View)** : produit les pages HTML vues par l'utilisateur.
+- **Contrôleur (Controller)** : fait le lien entre les deux. Il reçoit la requête, demande au modèle, puis rend la vue.
 
-Cette séparation permet de mieux organiser le code. On commence souvent par définir un modèle car les données sont la base de toute application.
+Cette séparation évite de mélanger les responsabilités. Les données (modèle) sont souvent définies en premier car tout en dépend.
 
 ## 6. Créer sa première ressource
 
-Imaginons que l'on souhaite gérer des articles de blog. On génère une ressource complète (*scaffold*) pour obtenir un exemple fonctionnel :
+Pour gérer des articles de blog, générons une structure complète (*scaffold*) :
 
 ```bash
 rails generate scaffold Article title:string body:text
 rails db:migrate
 ```
 
-- `rails generate scaffold` crée un **modèle**, un **contrôleur** et des **vues** pour l'objet `Article`.
-- `rails db:migrate` applique la migration générée afin de créer la table `articles` en base de données.
+- La première commande crée le modèle, le contrôleur et les vues pour `Article`.
+- La seconde applique la migration et crée la table `articles` en base.
 
 ### Pourquoi commencer par le modèle ?
 
-Le modèle décrit la structure des données (titres, contenus, etc.). En partant de cette structure, Rails sait ensuite générer le reste (contrôleurs, vues) de façon cohérente. Les données étant au cœur du projet, il est logique de les définir en premier.
+Le modèle définit la forme de vos données (titre, corps). En partant de là, Rails peut générer automatiquement les autres fichiers cohérents.
 
-Démarrez ensuite le serveur pour voir le résultat :
+Démarrez ensuite le serveur :
 
 ```bash
 rails server
 ```
 
-Rendez‑vous sur `http://localhost:3000/articles` pour accéder à l'interface créée automatiquement.
+Rendez-vous sur `http://localhost:3000/articles` pour voir le résultat.
 
 ## 7. Les routes
 
-Les routes font le lien entre les URL et les actions de vos contrôleurs. Pour les lister :
+Les routes associent une URL à une action de contrôleur. Pour les lister :
 
 ```bash
 rails routes
 ```
 
-Définissons une page d'accueil qui affiche la liste des articles :
+Pour définir une page d'accueil qui affiche vos articles :
 
 ```ruby
 # config/routes.rb
 root "articles#index"
 ```
 
+Rails saura ainsi que visiter `/` déclenche l'action `index` du contrôleur `Articles`.
+
 ## 8. Valider et associer les modèles
 
-Dans `app/models/article.rb`, on peut ajouter des règles pour s'assurer que chaque article possède un titre et un contenu suffisamment long :
+Dans `app/models/article.rb`, ajoutez des règles :
 
 ```ruby
 class Article < ApplicationRecord
@@ -103,6 +120,8 @@ class Article < ApplicationRecord
   validates :body, length: { minimum: 10 }
 end
 ```
+
+Rails refusera désormais d'enregistrer un article vide ou trop court.
 
 Pour lier un article à un auteur :
 
@@ -116,49 +135,80 @@ class Author < ApplicationRecord
 end
 ```
 
-Après avoir créé les migrations nécessaires, exécutez :
+Créez le modèle `Author` et lancez `rails db:migrate` pour mettre à jour la base.
+
+## 9. Contrôleurs pas à pas
+
+Un contrôleur regroupe plusieurs actions. Pour en créer un simplement :
 
 ```bash
-rails db:migrate
+rails generate controller Welcome index
 ```
 
-## 9. Contrôleurs et vues
+Cette commande crée `welcome_controller.rb` et la vue associée `index.html.erb`. Une action typique :
 
-Les contrôleurs contiennent la logique qui prépare les données avant de les afficher. Les vues se trouvent dans `app/views`. Rails vous fournit déjà des vues générées par le scaffold, que vous pouvez personnaliser.
+```ruby
+class WelcomeController < ApplicationController
+  def index
+    @articles = Article.all
+  end
+end
+```
 
-Les layouts communs (en‑tête, pied de page) sont stockés dans `app/views/layouts`.
+La variable `@articles` est transmise à la vue pour pouvoir afficher la liste.
 
-## 10. Migrations et gestion de la base
+## 10. Vues et mise en page
 
-Si vous souhaitez ajouter une colonne `published_at` à vos articles :
+Les vues résident dans `app/views`. Chaque action possède généralement un fichier `.html.erb`.
+
+Exemple de contenu pour `app/views/welcome/index.html.erb` :
+
+```erb
+<h1>Articles</h1>
+<ul>
+  <% @articles.each do |article| %>
+    <li><%= article.title %></li>
+  <% end %>
+</ul>
+```
+
+Entre `<% %>` se glisse du code Ruby grâce au moteur ERB. Les éléments communs (menu, pied de page) se placent dans `app/views/layouts/application.html.erb`.
+
+## 11. Migrations et gestion de la base
+
+Une migration décrit une modification du schéma. Pour ajouter une colonne `published_at` :
 
 ```bash
 rails generate migration AddPublishedAtToArticles published_at:datetime
 rails db:migrate
 ```
 
-Vous pouvez revenir en arrière avec `rails db:rollback` si nécessaire.
+En cas de souci, retour en arrière :
 
-## 11. Tester son application
+```bash
+rails db:rollback
+```
 
-Rails intègre Minitest. Pour lancer tous les tests :
+## 12. Tester son application
+
+Rails fournit **Minitest** pour automatiser les tests. Pour tout lancer :
 
 ```bash
 rails test
 ```
 
-Pour des tests plus avancés, vous pouvez installer RSpec en l'ajoutant dans le `Gemfile`.
+C'est un moyen sûr d'éviter les régressions quand on ajoute des fonctionnalités. Certains préfèrent **RSpec**, à installer via le `Gemfile`.
 
-## 12. Fonctionnalités avancées
+## 13. Fonctionnalités avancées
 
-- **Action Mailer** : envoie des e-mails (confirmation d'inscription, etc.).
-- **Active Job** : exécute des tâches en arrière‑plan.
-- **Action Cable** : gère les websockets pour des mises à jour en temps réel.
-- **Active Storage** : permet d'attacher des fichiers (images, documents) à vos modèles.
+- **Action Mailer** : envoyer des e-mails.
+- **Active Job** : exécuter des tâches en arrière‑plan.
+- **Action Cable** : websockets et temps réel.
+- **Active Storage** : joindre des fichiers à vos modèles.
 
-## 13. Déployer son application
+## 14. Déployer son application
 
-Voici un exemple de déploiement sur Heroku :
+Pour mettre votre site en ligne avec Heroku :
 
 ```bash
 heroku create
@@ -166,10 +216,10 @@ git push heroku main
 heroku run rails db:migrate
 ```
 
-N'oubliez pas de configurer vos variables d'environnement (clefs secrètes, base de données) avant la mise en production.
+N'oubliez pas de configurer les variables d'environnement (clés, bases de données) avant la mise en production.
 
-## 14. Aller plus loin
+## 15. Aller plus loin
 
-La [documentation officielle](https://guides.rubyonrails.org/) regorge de guides pour approfondir tous les sujets : sécurité, performances, API, tests, etc.
+La [documentation officielle de Rails](https://guides.rubyonrails.org/) explore en profondeur chaque sujet : sécurité, performance, API, tests… Prenez l'habitude de la consulter.
 
-Ce tutoriel doit vous donner une vue d'ensemble claire de Rails, en expliquant le rôle de chaque élément. En maîtrisant ces bases, vous pourrez créer vos propres applications avec assurance.
+En suivant pas à pas ce guide, même le roi des noobs pourra comprendre comment fonctionne Rails et construire ses propres applications web.

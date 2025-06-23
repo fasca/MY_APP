@@ -1,70 +1,137 @@
-# Tutoriel complet Ruby on Rails
+# Tutoriel détaillé pour maîtriser Ruby on Rails
 
-Ce guide explique pas à pas comment installer Ruby on Rails et créer une application basique.
+Ce guide explique pas à pas comment installer, configurer et utiliser Ruby on Rails afin d'en maîtriser les fonctionnalités principales. Les étapes ci-dessous doivent être suivies dans l'ordre pour progresser efficacement.
 
-## 1. Installation de Ruby et Rails
+## Étape 1 : Installation de Ruby et de Rails
 
-1. Installez Ruby (>= 2.7) via `rbenv` ou `rvm`.
-2. Installez Rails avec `gem install rails`.
-3. Vérifiez la version : `rails --version`.
+1. Installez **Ruby** (>= 2.7) via `rbenv` ou `rvm`.
+2. Mettez à jour `gem` : `gem update --system`.
+3. Installez **Rails** avec `gem install rails`.
+4. Vérifiez l'installation : `rails --version`.
 
-## 2. Création d'une application
+## Étape 2 : Création d'une nouvelle application
+
+Créez votre projet dans un dossier dédié :
 
 ```bash
 rails new blog
 cd blog
 ```
 
-Cette commande génère l'arborescence de l'application.
+Ajoutez l'option `-d postgresql` pour utiliser PostgreSQL si nécessaire.
 
-## 3. Structure d'un projet Rails
+## Étape 3 : Structure du projet
 
-- `app/` : contient les modèles, vues et contrôleurs (MVC).
-- `config/` : fichiers de configuration, routes, base de données.
-- `db/` : migrations et schéma de base de données.
+- `app/` : modèles, vues et contrôleurs (MVC).
+- `config/` : configuration et routes.
+- `db/` : migrations et schéma de base.
+- `test/` ou `spec/` : tests automatisés.
+- `Gemfile` : dépendances Ruby.
 
-## 4. Génération de ressources
+Familiarisez-vous avec ces dossiers avant de continuer.
 
-Créez un modèle Article avec contrôleur et vues :
+## Étape 4 : Génération d'une ressource
+
+Créons un modèle `Article` et ses vues CRUD :
 
 ```bash
 rails generate scaffold Article title:string body:text
 rails db:migrate
 ```
 
-Lancez le serveur :
+Lancez ensuite le serveur :
 
 ```bash
 rails server
 ```
 
-Ouvrez `http://localhost:3000/articles` pour voir l'interface CRUD.
+Rendez-vous sur `http://localhost:3000/articles` pour tester l'interface.
 
-## 5. Migrations et base de données
+## Étape 5 : Gestion des routes
 
-Les migrations décrivent les changements de schéma :
+Les routes sont définies dans `config/routes.rb`. Pour les lister :
 
 ```bash
-rails generate migration AddAuthorToArticles author:string
+rails routes
+```
+
+Définissez une page d'accueil :
+
+```ruby
+root "articles#index"
+```
+
+## Étape 6 : Modèles, validations et associations
+
+Les modèles héritent d'`ApplicationRecord`. Exemple :
+
+```ruby
+class Article < ApplicationRecord
+  validates :title, presence: true
+  validates :body, length: { minimum: 10 }
+end
+```
+
+Pour créer une relation avec un auteur :
+
+```ruby
+class Article < ApplicationRecord
+  belongs_to :author
+end
+
+class Author < ApplicationRecord
+  has_many :articles
+end
+```
+
+Exécutez `rails db:migrate` pour mettre à jour la base.
+
+## Étape 7 : Contrôleurs et vues
+
+Les contrôleurs gèrent la logique métier, les vues affichent les données. Les layouts se trouvent dans `app/views/layouts`.
+
+## Étape 8 : Migrations et base de données
+
+Pour ajouter un champ :
+
+```bash
+rails generate migration AddPublishedAtToArticles published_at:datetime
 rails db:migrate
 ```
 
-## 6. Tests
+Revenez en arrière avec `rails db:rollback`.
 
-Rails propose différents frameworks de test (Minitest, RSpec). Exemple avec Minitest :
+## Étape 9 : Tests automatisés
+
+Lancez les tests avec Minitest :
 
 ```bash
 rails test
 ```
 
-## 7. Déploiement
+Vous pouvez installer RSpec via le `Gemfile` pour des tests plus avancés.
 
-Pour déployer sur Heroku :
+## Étape 10 : Fonctionnalités avancées
+
+- **Action Mailer** : envoi d'e-mails.
+- **Active Job** : tâches en arrière-plan.
+- **Action Cable** : websockets.
+- **Active Storage** : fichiers uploadés.
+
+## Étape 11 : Déploiement
+
+Exemple de déploiement sur Heroku :
 
 ```bash
 heroku create
 git push heroku main
-rails db:migrate
+heroku run rails db:migrate
 ```
 
-Ce tutoriel fournit les bases pour bien démarrer avec Ruby on Rails. Consultez la [documentation officielle](https://guides.rubyonrails.org/) pour aller plus loin.
+Configurez vos variables d'environnement avant la mise en production.
+
+## Étape 12 : Aller plus loin
+
+Consultez la [documentation officielle](https://guides.rubyonrails.org/) pour approfondir : performances, sécurité, API, etc.
+
+Ce tutoriel doit vous permettre d'acquérir une compréhension solide de Rails et de développer vos propres applications avec confiance.
